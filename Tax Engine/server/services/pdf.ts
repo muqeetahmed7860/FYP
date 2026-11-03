@@ -1,0 +1,28 @@
+import PDFDocument from 'pdfkit';
+const format=(v:unknown)=>`Rs. ${new Intl.NumberFormat('en-PK',{maximumFractionDigits:2}).format(Number(v??0))}`;
+export function renderReport(doc:InstanceType<typeof PDFDocument>,type:string,snapshot:any,timestamp:Date){
+ const heading=(text:string)=>{if(doc.y>690)doc.addPage();doc.moveDown(.7).font('Helvetica-Bold').fontSize(13).fillColor('#145640').text(text).moveDown(.4);};
+ const paragraph=(text:string)=>doc.font('Helvetica').fontSize(9).fillColor('#344c3f').text(text,{width:505,lineGap:3}).moveDown(.4);
+ const pairs=(rows:[string,string][])=>{for(const [label,value]of rows){if(doc.y>735)doc.addPage();const y=doc.y;doc.font('Helvetica').fontSize(9).fillColor('#526558').text(label,45,y,{width:300});doc.font('Helvetica-Bold').fillColor('#203b2a').text(value,350,y,{width:195,align:'right'});doc.y=Math.max(doc.y,y+19);}};
+ doc.font('Helvetica-Bold').fontSize(23).fillColor('#145640').text('HISABKETAB AI');doc.fontSize(11).text(type==='TAX'?'INCOME TAX CALCULATION & TAX READINESS REPORT':'PERSONAL FINANCE REPORT');paragraph(`Generated ${timestamp.toISOString()}`);
+ if(type==='TAX'){
+ const r=snapshot.result,d=snapshot.dataset;heading('Taxpayer and calculation');pairs([['Name',d.profile.name],['CNIC',d.profile.cnic||'Not provided'],['Tax year',String(r.taxYear)],['Taxpayer category',r.taxpayerCategory],['Rule version',String(r.ruleVersion)],['Snapshot status',snapshot.status]]);
+ heading('Income and estimated tax');pairs([...Object.entries(r.incomeByHead).map(([k,v])=>[k,format(v)] as [string,string]),...['grossIncome','exemptions','deductions','taxableIncome','baseTax','surcharge','grossTax','eligibleCredits','netTaxPayable','potentialRefund'].map(k=>[k.replace(/([A-Z])/g,' $1'),format(r[k])] as [string,string])]);
+ heading('Applied progressive slab');pairs([['Lower bound',format(r.appliedSlab.lowerBound)],['Upper bound',r.appliedSlab.upperBound===null?'Unbounded':format(r.appliedSlab.upperBound)],['Base tax',format(r.appliedSlab.baseTax)],['Marginal rate',`${Number(r.appliedSlab.rate)*100}%`],['Excess over',format(r.appliedSlab.excessOver)]]);
+ heading('Withholding and credits');if(!r.withholding.length)paragraph('No withholding records.');for(const w of r.withholding)pairs([[`Section ${w.section} - ${w.taxTreatment}`,`${format(w.amount)} / credit ${format(w.creditAllowed)}`]]);
+ heading('Assets and liabilities');pairs([...r.wealth.assets.map((a:any)=>[a.description,format(a.value)]),['Total assets',format(r.wealth.totalAssets)],...r.wealth.liabilities.map((a:any)=>[a.description,format(a.value)]),['Total liabilities',format(r.wealth.totalLiabilities)],['Net wealth',format(r.wealth.netWealth)]]);
+ heading('Wealth reconciliation');pairs(Object.entries(r.reconciliation).filter(([,v])=>typeof v!=='object').map(([k,v])=>[k.replace(/([A-Z])/g,' $1'),k==='status'?String(v):format(v)]));if(r.reconciliation.capitalFlows)paragraph(r.reconciliation.capitalFlows.explanation);if(d.taxProfile.adjustmentsExplanation)paragraph(d.taxProfile.adjustmentsExplanation);
+ heading('Data completeness');paragraph(`${r.readiness.percentage}% - ${r.readiness.label}`);pairs(r.readiness.checks.map((c:any)=>[c.label,c.complete?'Complete':'Incomplete']));
+ heading('Calculation trail');for(const step of r.steps){heading(`${step.sequence}. ${step.stepName}`);paragraph(`${step.ruleCode} | Section ${step.section} | ${step.schedule}`);paragraph(step.reasonApplied);paragraph(step.formula.replaceAll('×','x').replaceAll('−','-').replaceAll('→','to'));pairs([['Input',format(step.inputAmount)],['Result',format(step.result)]]);}
+ heading('Applied rules and official references');for(const rule of r.rulesApplied){paragraph(`${rule.ruleCode}: ${rule.name}. Section ${rule.section}; ${rule.schedule}; ${rule.division}; clause ${rule.clause||'n/a'}. Version ${rule.version}.`);for(const ref of rule.references)paragraph(`${ref.sourceDocument}, page ${ref.page}. ${ref.url}`);}
+ paragraph(`Input integrity hash: ${snapshot.inputHash}`);
+ }else{
+ const d=snapshot.dashboard;heading('Current financial overview');pairs([['Available balance',format(d.balance)],['Monthly income',format(d.income)],['Monthly expenses',format(d.expenses)],['Monthly savings',format(d.savings)],['Savings rate',`${d.savingsRate}%`],['Net worth',format(d.netWorth)]]);
+ heading('Monthly income, expense and savings trend');for(const m of d.trend){paragraph(m.month);pairs([['Income',format(m.income)],['Expenses',format(m.expenses)],['Savings',format(m.savings)]]);}
+ heading('Category spending');pairs(d.categories.map((c:any)=>[c.name,format(c.amount)]));heading('Budget performance');for(const b of d.budgets)pairs([[b.name,`${b.percentage}% used`],['Limit / spent',`${format(b.amount)} / ${format(b.spent)}`],['Remaining / daily recommendation',`${format(b.remaining)} / ${format(b.dailyLimit)}`]]);
+ heading('Financial goals');for(const g of d.goals)pairs([[g.name,`${format(g.currentAmount)} / ${format(g.targetAmount)}`],['Target date',String(g.targetDate).slice(0,10)]]);
+ heading('Assets and liabilities');pairs([...snapshot.wealth.assets.map((a:any)=>[a.description,format(a.value)]),...snapshot.wealth.liabilities.map((a:any)=>[`Liability: ${a.description}`,format(a.value)]),['Net wealth',format(snapshot.wealth.netWealth)]]);
+ heading('Withholding summary');pairs(snapshot.withholding.map((w:any)=>[`${w.taxYear} - Section ${w.section} - ${w.taxTreatment}`,format(w.amount)]));
+ }
+ heading('Important information');paragraph('This report is generated by HisabKetab AI for tax-preparation assistance. It is not an official FBR return or proof of filing.');
+}

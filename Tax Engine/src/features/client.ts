@@ -1,0 +1,11 @@
+let csrf='';
+export function setCsrf(value:string){csrf=value;}
+export class ApiError extends Error{constructor(message:string,public code:string,public fields:{path:string;message:string}[]=[]){super(message);}}
+const friendly:Record<string,string>={TAX_RULE_NOT_FOUND:"We don't currently have a verified rule for this tax year or income type. Try another year or contact support.",UNVERIFIED_TAX_RULE:'The tax rules for this calculation still need verification. Please contact support.',TAX_RULE_CONFLICT:'We found conflicting tax rules. An administrator needs to review them before you can calculate.',INSUFFICIENT_DATA:'Some tax information is missing. Review your tax setup and any tax-paid certificates, then try again.'};
+export async function request<T=any>(path:string,method='GET',body?:unknown):Promise<T>{let response:Response;try{response=await fetch('/api'+path,{method,credentials:'same-origin',headers:{'Content-Type':'application/json',...(method!=='GET'?{'x-csrf-token':csrf}:{})},...(body!==undefined?{body:JSON.stringify(body)}:{})});}catch{throw new Error('We could not connect. Check your connection and try again.');}if(response.status===204)return undefined as T;let data:any;try{data=await response.json();}catch{throw new Error('The service is temporarily unavailable. Please try again.');}if(!response.ok)throw new ApiError(friendly[data.error?.code]??data.error?.message??'Unable to save. Please try again.',data.error?.code??'REQUEST_ERROR',data.error?.fields??[]);return data;}
+export const currency=(value:unknown)=>`Rs. ${new Intl.NumberFormat('en-PK',{maximumFractionDigits:2}).format(Number(value??0))}`;
+export const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Karachi',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+export const displayDate=(value:unknown)=>value?new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric'}).format(new Date(String(value))):'—';
+export const pretty=(s:string)=>(s===s.toUpperCase()?s.toLowerCase().replaceAll('_',' '):s.replace(/([A-Z])/g,' $1').replaceAll('_',' ')).replace(/^./,c=>c.toUpperCase());
+export function toast(message:string,undoId?:string){window.dispatchEvent(new CustomEvent('hk-toast',{detail:{message,undoId}}));}
+export function changed(){window.dispatchEvent(new Event('hk-data-changed'));}

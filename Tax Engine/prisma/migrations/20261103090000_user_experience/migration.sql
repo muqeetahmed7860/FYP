@@ -1,0 +1,12 @@
+ALTER TABLE "Session" ADD COLUMN "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, ADD COLUMN "device" TEXT NOT NULL DEFAULT 'Browser';
+ALTER TABLE "AuditLog" ADD COLUMN "details" JSONB;
+CREATE TABLE "UserExperience" ("userId" TEXT PRIMARY KEY REFERENCES "User"("id") ON DELETE CASCADE, "preferences" JSONB NOT NULL DEFAULT '{}', "city" TEXT NOT NULL DEFAULT '', "photo" BYTEA, "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE "DeletedRecord" ("id" TEXT PRIMARY KEY, "userId" TEXT NOT NULL REFERENCES "User"("id") ON DELETE CASCADE, "resource" TEXT NOT NULL, "snapshot" JSONB NOT NULL, "expiresAt" TIMESTAMP(3) NOT NULL);
+CREATE INDEX "DeletedRecord_userId_expiresAt_idx" ON "DeletedRecord"("userId", "expiresAt");
+CREATE TABLE "RuleHistory" ("id" TEXT PRIMARY KEY, "ruleCode" TEXT NOT NULL, "taxYear" INTEGER NOT NULL, "version" INTEGER NOT NULL, "actorId" TEXT NOT NULL, "action" TEXT NOT NULL, "reason" TEXT NOT NULL, "before" JSONB, "after" JSONB, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE INDEX "RuleHistory_taxYear_version_ruleCode_idx" ON "RuleHistory"("taxYear", "version", "ruleCode");
+CREATE TABLE "AppContent" ("id" TEXT PRIMARY KEY, "kind" TEXT NOT NULL, "title" TEXT NOT NULL, "body" TEXT NOT NULL, "segment" TEXT NOT NULL DEFAULT 'ALL', "published" BOOLEAN NOT NULL DEFAULT false, "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE "SystemError" ("id" TEXT PRIMARY KEY, "code" TEXT NOT NULL, "path" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE "UsabilityEvent" ("id" TEXT PRIMARY KEY, "name" TEXT NOT NULL, "durationMs" INTEGER, "clicks" INTEGER, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE FUNCTION guard_rule_history() RETURNS trigger AS $$ BEGIN RAISE EXCEPTION 'Rule history is append-only'; END; $$ LANGUAGE plpgsql;
+CREATE TRIGGER immutable_rule_history BEFORE UPDATE OR DELETE ON "RuleHistory" FOR EACH ROW EXECUTE FUNCTION guard_rule_history();

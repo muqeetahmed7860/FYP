@@ -1,0 +1,47 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: usability.spec.ts >> Admin portal user controls, draft slab editor, preview and history
+- Location: tests\e2e\usability.spec.ts:13:1
+
+# Error details
+
+```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: locator.fill: Test timeout of 180000ms exceeded.
+Call log:
+  - waiting for getByRole('dialog', { name: 'Draft rule editor' }).getByLabel('Rule Code', { exact: true })
+
+```
+
+# Test source
+
+```ts
+  1  | import {test,expect} from '@playwright/test';
+  2  | import {db} from '../../server/db';
+  3  | test.afterAll(()=>db.$disconnect());
+  4  | test('Demo, quick entry, undo, appearance, privacy, RTL, photo and mobile keyboard flows',async({page})=>{
+  5  |  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');await page.getByRole('button',{name:'Explore Demo Account'}).click();await expect(page.getByRole('heading',{name:/Abubakar/})).toBeVisible();await page.getByRole('button',{name:'Add Expense',exact:true}).click();const dialog=page.getByRole('dialog');await expect(dialog.getByLabel('Date',{exact:true})).not.toBeVisible();await dialog.getByLabel('Amount',{exact:true}).fill('125');await dialog.getByRole('button',{name:'Save',exact:true}).click();await expect(dialog).not.toBeVisible();await expect(page.getByText('Expense added.',{exact:true})).toBeVisible();await page.goto('/#transactions');await page.getByRole('button',{name:'Delete transaction',exact:true}).first().click();await page.getByRole('button',{name:'Undo',exact:true}).click();await expect(page.getByText('Restored.',{exact:true})).toBeVisible();
+  6  |  await page.keyboard.press('Control+k');await expect(page.getByRole('dialog',{name:'Search & quick actions'})).toBeVisible();await page.getByRole('textbox',{name:/Search transactions, merchants/}).fill('rent');await expect(page.getByRole('link',{name:'Home rent',exact:false}).first()).toBeVisible();await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).not.toBeVisible();
+  7  |  await page.goto('/#settings');let appearance=page.locator('section').filter({has:page.getByRole('heading',{name:'Appearance',exact:true})});await appearance.getByLabel('Theme',{exact:true}).selectOption('dark');await appearance.getByLabel('Font size',{exact:true}).selectOption('large');await appearance.getByRole('button',{name:'Save changes'}).click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await page.reload();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await expect(page.locator('html')).toHaveAttribute('data-font','large');await page.emulateMedia({reducedMotion:'reduce'});
+  8  |  for(const width of [320,375,768,1440]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();}const language=page.locator('section').filter({has:page.getByRole('heading',{name:'Language',exact:true})});await language.getByLabel('Preferred language').selectOption('ur');await language.getByRole('button',{name:'Save changes'}).click();await expect(page.locator('html')).toHaveAttribute('dir','rtl');await page.setViewportSize({width:375,height:812});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();await language.getByLabel('Preferred language').selectOption('en');await language.getByRole('button',{name:'Save changes'}).click();await expect(page.locator('html')).toHaveAttribute('dir','ltr');
+  9  |  await page.goto('/#profile');const photo=await page.evaluate(()=>{const canvas=document.createElement('canvas');canvas.width=80;canvas.height=80;const c=canvas.getContext('2d')!;c.fillStyle='#24875b';c.fillRect(0,0,80,80);return canvas.toDataURL('image/png').split(',')[1];});await page.getByLabel('Upload profile photo').setInputFiles({name:'portrait.png',mimeType:'image/png',buffer:Buffer.from(photo,'base64')});await page.getByRole('button',{name:'Use this photo'}).click();await expect(page.getByRole('dialog')).not.toBeVisible();await expect(page.getByRole('img',{name:'Your profile'}).first()).toBeVisible();await page.reload();await expect(page.getByRole('img',{name:'Your profile'}).first()).toBeVisible();
+  10 |  await page.goto('/#dashboard');await page.getByRole('button',{name:'Hide amounts',exact:true}).click();await expect(page.locator('.hk-balance>strong')).toHaveText('••••••');await expect(page.getByRole('navigation',{name:'Mobile navigation'}).getByRole('link')).toHaveCount(5);await page.screenshot({path:'test-results/dark-mobile.png',fullPage:true});
+  11 |  const unauthorized=await page.request.get('/api/admin/dashboard');expect(unauthorized.status()).toBe(403);await page.goto('/#admin');await expect(page.getByRole('heading',{name:'Administrator access required'})).toBeVisible();expect(errors).toEqual([]);
+  12 | });
+  13 | test('Admin portal user controls, draft slab editor, preview and history',async({page})=>{
+> 14 |  const response=await page.request.post('/api/auth/register',{data:{name:'Admin browser',email:`admin-browser-${Date.now()}@example.test`,password:'Admin-browser-password-1234'}});expect(response.status()).toBe(201);const auth=await response.json();await db.user.update({where:{id:auth.user.id},data:{role:'ADMIN'}});await page.goto('/admin');await expect(page.getByRole('heading',{name:'Admin dashboard',exact:true})).toBeVisible();await page.getByRole('link',{name:'Tax Management',exact:true}).click();await page.getByRole('button',{name:'Create Rule',exact:true}).click();const editor=page.getByRole('dialog',{name:'Draft rule editor'});await editor.getByLabel('Rule Code',{exact:true}).fill('UX-PREVIEW-'+Date.now());await editor.getByLabel('Rule Name',{exact:true}).fill('Preview fixture rule');await editor.getByLabel('Version',{exact:true}).fill(String(Math.floor(Date.now()/1000)+88));await editor.getByLabel('Section',{exact:true}).fill('12');await editor.getByLabel('Reason / review notes',{exact:true}).fill('Browser validation fixture');await editor.getByLabel('Source Document',{exact:true}).fill('Official source fixture');await editor.getByLabel('Url',{exact:true}).fill('https://www.fbr.gov.pk/');await editor.getByLabel('Page',{exact:true}).fill('1');await editor.getByLabel('Slab 1 rate',{exact:true}).fill('0.1');await editor.getByRole('button',{name:'Review & save draft'}).click();await page.getByRole('button',{name:'Confirm draft changes'}).click();await expect(editor).not.toBeVisible();await page.getByLabel('Rule version',{exact:true}).fill(String(Math.floor(Date.now()/1000)+88));
+     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ^ Error: locator.fill: Test timeout of 180000ms exceeded.
+  15 |  // Locate the new draft through the API because the timestamp may roll while typing.
+  16 |  const created=await db.taxRule.findFirstOrThrow({where:{name:'Preview fixture rule'},orderBy:{version:'desc'}});await page.getByLabel('Rule version',{exact:true}).fill(String(created.version));await expect(page.getByRole('heading',{name:'Preview fixture rule'})).toBeVisible();await page.getByRole('button',{name:'Test rule',exact:true}).click();await page.getByRole('button',{name:'Preview calculation'}).click();await expect(page.getByRole('heading',{name:'Rs. 240,000'})).toBeVisible();await page.getByRole('button',{name:'Close dialog'}).click();await page.locator('summary').filter({hasText:'Rule history'}).click();await expect(page.getByText('SAVE_DRAFT',{exact:false}).first()).toBeVisible();for(const width of [320,768,1440]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();}await page.screenshot({path:'test-results/admin.png',fullPage:true});
+  17 | });
+  18 | 
+```

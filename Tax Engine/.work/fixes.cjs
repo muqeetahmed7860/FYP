@@ -1,0 +1,20 @@
+const fs=require('fs');
+function edit(file,from,to){let s=fs.readFileSync(file,'utf8');if(!s.includes(from))throw new Error('Patch target missing: '+file+' '+from.slice(0,50));fs.writeFileSync(file,s.replace(from,to));}
+edit('src/features/home.tsx',"recurring:'recurring'}[key]", "recurring:'recurring',income:'transactions',expenses:'transactions',savings:'transactions'}[key]");
+edit('src/IntegratedApp.tsx','prefs.lockOnOpen&&!unlocked&&!isAdmin','prefs.lockOnOpen&&!unlocked');
+edit('server/services/tax.ts',"const rules=JSON.parse(JSON.stringify", "if(taxYear.status!=='ACTIVE')throw new AppError('TAX_YEAR_UNAVAILABLE','This tax year is not active. Choose an active year or contact your administrator.');const rules=JSON.parse(JSON.stringify");
+edit('server/routes/adminPortal.ts',"const before=requireFound(await tx.taxRule.findUnique({where:{id:String(q.params.id)},include:ruleInclude}));if(before.published)","const before=requireFound(await tx.taxRule.findUnique({where:{id:String(q.params.id)},include:ruleInclude}));const review=await tx.systemSetting.findUnique({where:{key:`rule-review:${before.id}`}});if(stage==='VERIFIED'&&review?.value!=='REVIEW')throw new AppError('VALIDATION_ERROR','Send this draft for review before verifying it.');if(before.published)");
+edit('server/routes/admin.ts',"data.verified?new Date():null", "data.verified?new Date():null");
+edit('server/auth.ts',"async function session(res:Response,userId:string)","async function session(res:Response,userId:string,device='Browser')");
+edit('server/auth.ts',"userId,csrfToken,expiresAt:new Date(Date.now()+7*86400000)","userId,csrfToken,device,expiresAt:new Date(Date.now()+7*86400000)");
+edit('server/auth.ts',"const csrfToken=await session(res,user.id);res.json", "const csrfToken=await session(res,user.id,(req.header('user-agent')??'Browser').slice(0,160));res.json");
+edit('server/routes/experience.ts',"await tx.$executeRaw`SELECT set_config", "await tx.$queryRaw`SELECT set_config");
+edit('src/features/taxWorkspace.tsx',"import {Form,JsonView,type Field} from './forms';","import {Form,JsonView,Modal,type Field} from './forms';");
+edit('src/features/taxWorkspace.tsx',"[search,setSearch]=useState('');", "[search,setSearch]=useState(''),[confirmFinalize,setConfirmFinalize]=useState(false);");
+edit('src/features/taxWorkspace.tsx',"onClick={()=>action(async()=>setCalculation(await request(`/tax/calculations/${calculation.id}/finalize`,'POST',{})))}", "onClick={()=>setConfirmFinalize(true)}");
+edit('src/features/taxWorkspace.tsx'," </>;", " {confirmFinalize&&<Modal title=\"Finalize this calculation?\" onClose={()=>setConfirmFinalize(false)}><p>This reviewed calculation will be locked. You can still create a new estimate later.</p><Form fields={[]} label=\"Confirm finalization\" onSave={async()=>{setCalculation(await request(`/tax/calculations/${calculation.id}/finalize`,'POST',{}));setConfirmFinalize(false);}}/></Modal>}</>;");
+edit('src/features/taxWorkspace.tsx','Your financial records, connected to a deterministic tax engine.','Your existing financial records help prepare this tax estimate.');
+edit('src/features/taxWorkspace.tsx',"'Run tax calculation'","'Calculate My Tax'");
+edit('src/features/taxWorkspace.tsx','Imported from your ledger','Your recorded income and expenses');
+edit('src/features/planning.tsx',"const endpoint=page", "const endpoint=page");
+console.log('Applied review fixes.');

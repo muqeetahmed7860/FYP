@@ -1,0 +1,39 @@
+import {Router,type Request} from 'express';
+import {z} from 'zod';
+import {db,atomic,audit} from '../db';
+import {requireFound,AppError} from '../errors';
+import * as v from '../validation';
+import {accounts,saveTransaction,deleteTransaction} from '../services/ledger';
+import {budgets,dashboard,discover,emergency,allocation,wealth,notifications} from '../services/finance';
+import {archiveRecord} from '../services/experience';
+import {writeTransaction} from '../services/ledger';
+import {D,sum} from '../../src/domain/money';
+export const financeRouter=Router();
+financeRouter.get('/categories',async(_req,res)=>res.json(await db.transactionCategory.findMany({orderBy:{name:'asc'}})));
+financeRouter.get('/dashboard',async(req,res)=>res.json(await dashboard(req.userId)));
+financeRouter.get('/accounts',async(req,res)=>res.json(await accounts(db,req.userId)));
+financeRouter.get('/transactions',async(req,res)=>{const q=z.object({search:z.string().max(100).optional(),accountId:z.string().optional(),type:z.enum(['INCOME','EXPENSE','TRANSFER']).optional(),categoryId:z.string().optional(),from:v.date.optional(),to:v.date.optional(),min:v.amount.optional(),max:v.amount.optional(),paymentMethod:z.string().optional(),taxRelevant:z.enum(['true','false']).optional(),sort:z.enum(['date','amount']).default('date'),direction:z.enum(['asc','desc']).default('desc'),page:z.coerce.number().int().min(1).default(1)}).parse(req.query);const where={userId:req.userId,...(q.search?{OR:[{description:{contains:q.search,mode:'insensitive' as const}},{merchant:{contains:q.search,mode:'insensitive' as const}}]}:{}),accountId:q.accountId,type:q.type,categoryId:q.categoryId,paymentMethod:q.paymentMethod,taxRelevant:q.taxRelevant===undefined?undefined:q.taxRelevant==='true',date:{gte:q.from,lte:q.to},amount:{gte:q.min,lte:q.max}};const [items,total]=await Promise.all([db.transaction.findMany({where,include:{category:true,account:true},orderBy:{[q.sort]:q.direction},take:100,skip:(q.page-1)*100}),db.transaction.count({where})]);res.json({items,total,page:q.page});});
+financeRouter.post('/transactions/split',async(req,res)=>{const b=z.object({transaction:v.transactionSchema,parts:z.array(z.object({categoryId:z.string().min(1),amount:v.nonzero}).strict()).min(2).max(10)}).strict().parse(req.body);if(b.transaction.type!=='EXPENSE'||!sum(b.parts.map(p=>p.amount)).equals(D(b.transaction.amount)))throw new AppError('VALIDATION_ERROR','Split amounts must add up to the expense total.');res.status(201).json(await atomic(async tx=>{const records=[];for(const [i,part] of b.parts.entries())records.push(await writeTransaction(tx,req.userId,{...b.transaction,...part,idempotencyKey:i===0?b.transaction.idempotencyKey:crypto.randomUUID()}));return records;}));});
+financeRouter.post('/transactions',async(req,res)=>res.status(201).json(await saveTransaction(req.userId,req.body)));
+financeRouter.put('/transactions/:id',async(req,res)=>res.json(await saveTransaction(req.userId,req.body,String(req.params.id))));
+financeRouter.delete('/transactions/:id',async(req,res)=>{res.json(await deleteTransaction(req.userId,String(req.params.id)));});
+financeRouter.get('/budgets',async(req,res)=>res.json(await budgets(req.userId)));
+financeRouter.get('/net-worth',async(req,res)=>res.json({current:await wealth(db,req.userId),history:await db.wealthStatement.findMany({where:{userId:req.userId},orderBy:{createdAt:'desc'},take:50})}));
+financeRouter.post('/net-worth/snapshot',async(req,res)=>{const w=await wealth(db,req.userId);res.json(await db.wealthStatement.create({data:{userId:req.userId,taxYear:new Date().getUTCFullYear(),asOf:new Date(),totalAssets:w.totalAssets,totalLiabilities:w.totalLiabilities,netWealth:w.netWealth,assets:{create:w.assets},liabilities:{create:w.liabilities}}}));});
+financeRouter.post('/recurring/discover',async(req,res)=>res.json(await discover(req.userId)));
+financeRouter.post('/goals/recommend-allocation',async(req,res)=>{const b=z.object({available:v.amount,save:z.boolean().default(false)}).strict().parse(req.body);res.json(await allocation(req.userId,b.available,b.save));});
+financeRouter.get('/emergency-fund',async(req,res)=>res.json(await emergency(req.userId)));
+financeRouter.post('/emergency-fund/calculate',async(req,res)=>res.json(await emergency(req.userId)));
+financeRouter.get('/notifications',async(req,res)=>res.json(await notifications(req.userId)));
+financeRouter.put('/notifications/:id',async(req,res)=>{const result=await db.notification.updateMany({where:{id:String(req.params.id),userId:req.userId},data:{read:true}});if(!result.count)throw new AppError('NOT_FOUND','Notification not found.',404);res.json({ok:true});});
+financeRouter.get('/profile',async(req,res)=>{const p=requireFound(await db.profile.findUnique({where:{userId:req.userId}}));res.json({...p,cnic:p.cnic?p.cnic.slice(0,5)+'-*****-'+p.cnic.slice(-1):''});});
+financeRouter.put('/profile',async(req,res)=>{const data=v.profileSchema.parse(req.body);await atomic(async tx=>{await tx.profile.update({where:{userId:req.userId},data});await audit(tx,req.userId,'UPDATE','profile',req.userId);});res.json({ok:true});});
+// A fixed allowlist of owner-scoped resources, each with a separate strict schema.
+const resources=[['accounts','financialAccount',v.accountSchema],['budgets','budget',v.budgetSchema],['goals','financialGoal',v.goalSchema],['assets','asset',v.assetSchema],['liabilities','liability',v.liabilitySchema],['withholding','withholdingTaxRecord',v.withholdingSchema],['recurring','recurringObligation',v.recurringSchema]] as const;
+for(const [path,model,schema] of resources){
+ if(!['accounts','budgets'].includes(path))financeRouter.get(`/${path}`,async(req,res)=>res.json(await (db[model] as any).findMany({where:{userId:req.userId}})));
+ for(const method of ['post','put'] as const)financeRouter[method](`/${path}${method==='put'?'/:id':''}`,async(req:Request,res)=>{const parsed=schema.parse(req.body) as any;const id=method==='put'?String(req.params.id):undefined;const result=await atomic(async tx=>{const repository=tx[model] as any;if(id){requireFound(await repository.findFirst({where:{id,userId:req.userId}}));if(model==='financialAccount'&&await tx.ledgerEntry.count({where:{accountId:id}})){const before=requireFound(await tx.financialAccount.findUnique({where:{id}}));if(!before.openingBalance.equals(parsed.openingBalance)||+before.openingDate!==+parsed.openingDate)throw new AppError('CONFLICT','Opening balance/date are locked after ledger activity.');}}
+ let data=parsed;if(model==='budget'){const {categoryIds,...rest}=parsed;const found=await tx.transactionCategory.count({where:{id:{in:categoryIds},type:'EXPENSE'}});if(found!==new Set(categoryIds).size)throw new AppError('VALIDATION_ERROR','Invalid expense categories.');data={...rest,categories:{...(id?{deleteMany:{}}:{}),create:categoryIds.map((categoryId:string)=>({categoryId}))}};}
+ const row:any=id?await repository.update({where:{id},data}):await repository.create({data:{...data,userId:req.userId}});await audit(tx,req.userId,id?'UPDATE':'CREATE',model,row.id);return row;});res.status(id?200:201).json(result);});
+ financeRouter.delete(`/${path}/:id`,async(req,res)=>{const id=String(req.params.id);const undo=await atomic(async tx=>{const repository=tx[model] as any;const row=requireFound<any>(await repository.findFirst({where:{id,userId:req.userId},...(model==='budget'?{include:{categories:true}}:model==='financialGoal'?{include:{allocations:true}}:{})}));if(model==='financialAccount'&&await tx.ledgerEntry.count({where:{accountId:id}}))throw new AppError('CONFLICT','An account with transactions must be archived instead of deleted.',409);const archived=await archiveRecord(tx,req.userId,path,row);await repository.delete({where:{id}});await audit(tx,req.userId,'DELETE',model,id);return archived;});res.json({ok:true,undoId:undo.id,expiresAt:undo.expiresAt});});
+}

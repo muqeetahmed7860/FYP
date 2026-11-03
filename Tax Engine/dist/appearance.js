@@ -1,0 +1,1 @@
+try{var p=JSON.parse(localStorage.getItem('hk-appearance')||'{}');var d=document.documentElement;d.dataset.theme=p.theme==='dark'||p.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.font=p.font||'default';d.dataset.density=p.density||'comfortable';d.dataset.motion=p.motion?'reduce':'normal';}catch(e){}

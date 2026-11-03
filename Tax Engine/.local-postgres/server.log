@@ -1,0 +1,222 @@
+2026-11-02 21:25:46.119 PKT [14324] LOG:  starting PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35227, 64-bit
+2026-11-02 21:25:46.121 PKT [14324] LOG:  listening on IPv4 address "127.0.0.1", port 55432
+2026-11-02 21:25:46.374 PKT [17972] LOG:  database system was shut down at 2026-11-02 21:25:33 PKT
+2026-11-02 21:25:46.418 PKT [14324] LOG:  database system is ready to accept connections
+2026-11-02 21:30:46.361 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 21:32:38.962 PKT [16660] LOG:  checkpoint complete: wrote 1018 buffers (6.2%), wrote 3 SLRU buffers; 1 WAL file(s) added, 0 removed, 0 recycled; write=109.389 s, sync=2.630 s, total=112.601 s; sync files=311, longest=0.105 s, average=0.009 s; distance=4898 kB, estimate=4898 kB; lsn=0/1CB50C8, redo lsn=0/1CB5038
+2026-11-02 21:34:08.673 PKT [15132] ERROR:  relation "_prisma_migrations" does not exist at character 126
+2026-11-02 21:34:08.673 PKT [15132] STATEMENT:  SELECT "id", "checksum", "finished_at", "migration_name", "logs", "rolled_back_at", "started_at", "applied_steps_count" FROM "_prisma_migrations" ORDER BY "started_at" ASC
+2026-11-02 21:34:09.714 PKT [16660] LOG:  checkpoint starting: immediate force wait
+2026-11-02 21:34:09.971 PKT [16660] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.010 s, sync=0.107 s, total=0.258 s; sync files=4, longest=0.037 s, average=0.027 s; distance=4702 kB, estimate=4879 kB; lsn=0/214C908, redo lsn=0/214C8B0
+2026-11-02 21:34:11.269 PKT [16660] LOG:  checkpoint starting: immediate force wait
+2026-11-02 21:34:11.591 PKT [16660] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.016 s, sync=0.109 s, total=0.322 s; sync files=4, longest=0.040 s, average=0.028 s; distance=4702 kB, estimate=4861 kB; lsn=0/25E4238, redo lsn=0/25E41E0
+2026-11-02 21:39:11.591 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 21:39:34.288 PKT [16660] LOG:  checkpoint complete: wrote 194 buffers (1.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=21.097 s, sync=1.188 s, total=22.698 s; sync files=205, longest=0.091 s, average=0.006 s; distance=1655 kB, estimate=4540 kB; lsn=0/27821A8, redo lsn=0/2782118
+2026-11-02 21:49:11.312 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 21:49:31.263 PKT [16660] LOG:  checkpoint complete: wrote 172 buffers (1.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=18.611 s, sync=0.941 s, total=19.951 s; sync files=71, longest=0.093 s, average=0.014 s; distance=766 kB, estimate=4163 kB; lsn=0/2841D90, redo lsn=0/2841D00
+2026-11-02 21:49:59.198 PKT [19004] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-02 21:49:59.198 PKT [19004] DETAIL:  Key ("userId", "idempotencyKey")=(cmvzhvej80000thogga6zj59c, a3a542fa-b257-447e-85e3-a653a85a502b) already exists.
+2026-11-02 21:49:59.198 PKT [19004] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-02 21:54:11.272 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 21:54:19.717 PKT [16660] LOG:  checkpoint complete: wrote 65 buffers (0.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=7.565 s, sync=0.683 s, total=8.445 s; sync files=53, longest=0.085 s, average=0.013 s; distance=119 kB, estimate=3759 kB; lsn=0/285FCA0, redo lsn=0/285FC48
+2026-11-02 21:55:01.208 PKT [6396] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:55:01.324 PKT [15000] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:57:13.349 PKT [13660] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:57:13.467 PKT [18260] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:57:13.469 PKT [7844] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:57:13.471 PKT [2484] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:58:38.372 PKT [2068] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:58:38.476 PKT [14852] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:58:38.480 PKT [13148] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:58:38.481 PKT [3468] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 21:59:11.736 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 21:59:14.430 PKT [16660] LOG:  checkpoint complete: wrote 19 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=2.073 s, sync=0.484 s, total=2.694 s; sync files=20, longest=0.072 s, average=0.025 s; distance=33 kB, estimate=3386 kB; lsn=0/28684C0, redo lsn=0/2868430
+2026-11-02 22:01:50.601 PKT [11948] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.685 PKT [12928] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.685 PKT [15044] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.685 PKT [10484] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.686 PKT [4572] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.686 PKT [10072] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.696 PKT [14468] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.697 PKT [5172] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:01:50.698 PKT [19664] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:02:50.551 PKT [10456] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-02 22:02:50.551 PKT [10456] DETAIL:  Key ("userId", "idempotencyKey")=(cmvziby450000th38s0sg9tcg, b6bc278e-76bf-4694-b11d-f767954a3f89) already exists.
+2026-11-02 22:02:50.551 PKT [10456] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-02 22:04:11.434 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:04:24.424 PKT [16660] LOG:  checkpoint complete: wrote 111 buffers (0.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=12.055 s, sync=0.793 s, total=12.991 s; sync files=90, longest=0.054 s, average=0.009 s; distance=389 kB, estimate=3086 kB; lsn=0/28C99F0, redo lsn=0/28C9960
+2026-11-02 22:04:36.271 PKT [13056] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-02 22:04:36.271 PKT [13056] DETAIL:  Key ("userId", "idempotencyKey")=(cmvzie7tz0000thqck53i74al, ff3a0395-f4fe-4da0-9889-5259486ae892) already exists.
+2026-11-02 22:04:36.271 PKT [13056] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-02 22:04:36.400 PKT [13468] ERROR:  Published rules are immutable
+2026-11-02 22:04:36.400 PKT [13468] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-02 22:04:36.400 PKT [13468] STATEMENT:  UPDATE "public"."TaxRule" SET "name" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-02 22:04:37.822 PKT [13056] ERROR:  Calculation snapshots are immutable
+2026-11-02 22:04:37.822 PKT [13056] CONTEXT:  PL/pgSQL function guard_calculation_snapshot() line 5 at RAISE
+2026-11-02 22:04:37.822 PKT [13056] STATEMENT:  UPDATE "public"."TaxCalculation" SET "result" = $1 WHERE ("public"."TaxCalculation"."id" = $2 AND 1=1) RETURNING "public"."TaxCalculation"."id", "public"."TaxCalculation"."userId", "public"."TaxCalculation"."taxYear", "public"."TaxCalculation"."ruleVersion", "public"."TaxCalculation"."status", "public"."TaxCalculation"."inputHash", "public"."TaxCalculation"."dataset", "public"."TaxCalculation"."result", "public"."TaxCalculation"."createdAt", "public"."TaxCalculation"."finalizedAt"
+2026-11-02 22:04:37.835 PKT [13056] ERROR:  Published rules are immutable
+2026-11-02 22:04:37.835 PKT [13056] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-02 22:04:37.835 PKT [13056] STATEMENT:  UPDATE "public"."TaxRule" SET "verified" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-02 22:05:24.239 PKT [9992] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.326 PKT [1300] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.336 PKT [13772] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.337 PKT [20452] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.338 PKT [10972] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.339 PKT [11852] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.341 PKT [20132] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.342 PKT [2948] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:05:24.343 PKT [10976] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:09:11.448 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:09:23.979 PKT [16660] LOG:  checkpoint complete: wrote 107 buffers (0.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=11.641 s, sync=0.723 s, total=12.531 s; sync files=86, longest=0.025 s, average=0.009 s; distance=421 kB, estimate=2820 kB; lsn=0/2932F08, redo lsn=0/2932E78
+2026-11-02 22:15:19.426 PKT [5248] ERROR:  Published rules are immutable
+2026-11-02 22:15:19.426 PKT [5248] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-02 22:15:19.426 PKT [5248] STATEMENT:  UPDATE "public"."TaxRule" SET "name" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-02 22:15:19.480 PKT [4248] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-02 22:15:19.480 PKT [4248] DETAIL:  Key ("userId", "idempotencyKey")=(cmvzis0980000th744pfcyu8o, a8725931-0887-4eea-a3e3-7d850487fefd) already exists.
+2026-11-02 22:15:19.480 PKT [4248] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-02 22:15:20.517 PKT [4248] ERROR:  Calculation snapshots are immutable
+2026-11-02 22:15:20.517 PKT [4248] CONTEXT:  PL/pgSQL function guard_calculation_snapshot() line 5 at RAISE
+2026-11-02 22:15:20.517 PKT [4248] STATEMENT:  UPDATE "public"."TaxCalculation" SET "result" = $1 WHERE ("public"."TaxCalculation"."id" = $2 AND 1=1) RETURNING "public"."TaxCalculation"."id", "public"."TaxCalculation"."userId", "public"."TaxCalculation"."taxYear", "public"."TaxCalculation"."ruleVersion", "public"."TaxCalculation"."status", "public"."TaxCalculation"."inputHash", "public"."TaxCalculation"."dataset", "public"."TaxCalculation"."result", "public"."TaxCalculation"."createdAt", "public"."TaxCalculation"."finalizedAt"
+2026-11-02 22:15:20.528 PKT [4248] ERROR:  Published rules are immutable
+2026-11-02 22:15:20.528 PKT [4248] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-02 22:15:20.528 PKT [4248] STATEMENT:  UPDATE "public"."TaxRule" SET "verified" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-02 22:16:24.505 PKT [18196] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.508 PKT [17164] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.580 PKT [20336] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.580 PKT [20140] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.580 PKT [15312] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.580 PKT [8292] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.581 PKT [17804] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.581 PKT [8152] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:16:24.582 PKT [15540] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:19:12.002 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:19:27.500 PKT [16660] LOG:  checkpoint complete: wrote 130 buffers (0.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=14.238 s, sync=0.869 s, total=15.499 s; sync files=84, longest=0.054 s, average=0.011 s; distance=629 kB, estimate=2601 kB; lsn=0/29D06D0, redo lsn=0/29D0640
+2026-11-02 22:21:36.950 PKT [18496] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.080 PKT [8584] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.081 PKT [828] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.086 PKT [19824] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.088 PKT [3024] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.088 PKT [12096] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.089 PKT [15848] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.094 PKT [7792] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:21:37.096 PKT [4936] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-02 22:24:12.528 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:24:17.436 PKT [1376] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-02 22:24:17.436 PKT [1376] DETAIL:  Key ("userId", "idempotencyKey")=(cmvzj3j380000thq0ej1zi93q, 648a71dd-a237-46a0-a27c-68593d7ea367) already exists.
+2026-11-02 22:24:17.436 PKT [1376] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-02 22:24:17.651 PKT [3028] ERROR:  Published rules are immutable
+2026-11-02 22:24:17.651 PKT [3028] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-02 22:24:17.651 PKT [3028] STATEMENT:  UPDATE "public"."TaxRule" SET "name" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-02 22:24:18.790 PKT [1376] ERROR:  Calculation snapshots are immutable
+2026-11-02 22:24:18.790 PKT [1376] CONTEXT:  PL/pgSQL function guard_calculation_snapshot() line 5 at RAISE
+2026-11-02 22:24:18.790 PKT [1376] STATEMENT:  UPDATE "public"."TaxCalculation" SET "result" = $1 WHERE ("public"."TaxCalculation"."id" = $2 AND 1=1) RETURNING "public"."TaxCalculation"."id", "public"."TaxCalculation"."userId", "public"."TaxCalculation"."taxYear", "public"."TaxCalculation"."ruleVersion", "public"."TaxCalculation"."status", "public"."TaxCalculation"."inputHash", "public"."TaxCalculation"."dataset", "public"."TaxCalculation"."result", "public"."TaxCalculation"."createdAt", "public"."TaxCalculation"."finalizedAt"
+2026-11-02 22:24:18.801 PKT [1376] ERROR:  Published rules are immutable
+2026-11-02 22:24:18.801 PKT [1376] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-02 22:24:18.801 PKT [1376] STATEMENT:  UPDATE "public"."TaxRule" SET "verified" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-02 22:24:22.388 PKT [16660] LOG:  checkpoint complete: wrote 83 buffers (0.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=9.010 s, sync=0.697 s, total=9.860 s; sync files=77, longest=0.080 s, average=0.010 s; distance=256 kB, estimate=2366 kB; lsn=0/2A63A40, redo lsn=0/2A10710
+2026-11-02 22:29:12.395 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:29:22.387 PKT [16660] LOG:  checkpoint complete: wrote 85 buffers (0.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=9.189 s, sync=0.658 s, total=9.993 s; sync files=57, longest=0.075 s, average=0.012 s; distance=471 kB, estimate=2177 kB; lsn=0/2A88168, redo lsn=0/2A86488
+2026-11-02 22:34:12.407 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:34:15.022 PKT [16660] LOG:  checkpoint complete: wrote 18 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=1.997 s, sync=0.492 s, total=2.615 s; sync files=16, longest=0.072 s, average=0.031 s; distance=69 kB, estimate=1966 kB; lsn=0/2A978E8, redo lsn=0/2A97890
+2026-11-02 22:39:12.020 PKT [16660] LOG:  checkpoint starting: time
+2026-11-02 22:39:12.789 PKT [16660] LOG:  checkpoint complete: wrote 2 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.224 s, sync=0.132 s, total=0.770 s; sync files=3, longest=0.089 s, average=0.044 s; distance=6 kB, estimate=1770 kB; lsn=0/2A99488, redo lsn=0/2A99430
+2026-11-03 21:13:03.704 PKT [6044] LOG:  starting PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35227, 64-bit
+2026-11-03 21:13:03.705 PKT [6044] LOG:  listening on IPv4 address "127.0.0.1", port 55432
+2026-11-03 21:13:04.329 PKT [21328] LOG:  database system was interrupted; last known up at 2026-11-02 22:39:12 PKT
+2026-11-03 21:13:18.558 PKT [21328] LOG:  could not open file "./server.log": sharing violation
+2026-11-03 21:13:18.558 PKT [21328] DETAIL:  Continuing to retry for 30 seconds.
+2026-11-03 21:13:18.558 PKT [21328] HINT:  You might have antivirus, backup, or similar software interfering with the database system.
+2026-11-03 21:13:45.631 PKT [21328] LOG:  syncing data directory (fsync), elapsed time: 41.30 s, current path: .
+2026-11-03 21:13:45.713 PKT [21328] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-11-03 21:13:45.770 PKT [21328] LOG:  redo starts at 0/2A99430
+2026-11-03 21:13:45.771 PKT [21328] LOG:  invalid record length at 0/2A99538: expected at least 24, got 0
+2026-11-03 21:13:45.772 PKT [21328] LOG:  redo done at 0/2A99500 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.01 s
+2026-11-03 21:13:45.810 PKT [22328] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-11-03 21:13:45.972 PKT [22328] LOG:  checkpoint complete: wrote 0 buffers (0.0%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.048 s, total=0.182 s; sync files=2, longest=0.028 s, average=0.024 s; distance=0 kB, estimate=0 kB; lsn=0/2A99538, redo lsn=0/2A99538
+2026-11-03 21:13:46.074 PKT [6044] LOG:  database system is ready to accept connections
+2026-11-03 21:18:45.978 PKT [22328] LOG:  checkpoint starting: time
+2026-11-03 21:18:54.674 PKT [22328] LOG:  checkpoint complete: wrote 70 buffers (0.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=7.599 s, sync=0.684 s, total=8.696 s; sync files=68, longest=0.061 s, average=0.011 s; distance=453 kB, estimate=453 kB; lsn=0/2B0AB60, redo lsn=0/2B0AB08
+2026-11-03 21:32:11.283 PKT [1692] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-03 21:32:11.283 PKT [1692] DETAIL:  Key ("userId", "idempotencyKey")=(cmw0wodhp0000thpw9kb2airb, feb9dd10-f5b3-4f60-80aa-a6187bc5fc41) already exists.
+2026-11-03 21:32:11.283 PKT [1692] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-03 21:32:12.075 PKT [12012] ERROR:  Published rules are immutable
+2026-11-03 21:32:12.075 PKT [12012] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-03 21:32:12.075 PKT [12012] STATEMENT:  UPDATE "public"."TaxRule" SET "name" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-03 21:32:12.950 PKT [1692] ERROR:  Calculation snapshots are immutable
+2026-11-03 21:32:12.950 PKT [1692] CONTEXT:  PL/pgSQL function guard_calculation_snapshot() line 7 at RAISE
+2026-11-03 21:32:12.950 PKT [1692] STATEMENT:  UPDATE "public"."TaxCalculation" SET "result" = $1 WHERE ("public"."TaxCalculation"."id" = $2 AND 1=1) RETURNING "public"."TaxCalculation"."id", "public"."TaxCalculation"."userId", "public"."TaxCalculation"."taxYear", "public"."TaxCalculation"."ruleVersion", "public"."TaxCalculation"."status", "public"."TaxCalculation"."inputHash", "public"."TaxCalculation"."dataset", "public"."TaxCalculation"."result", "public"."TaxCalculation"."createdAt", "public"."TaxCalculation"."finalizedAt"
+2026-11-03 21:32:12.965 PKT [1692] ERROR:  Published rules are immutable
+2026-11-03 21:32:12.965 PKT [1692] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-03 21:32:12.965 PKT [1692] STATEMENT:  UPDATE "public"."TaxRule" SET "verified" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-03 21:33:45.728 PKT [22328] LOG:  checkpoint starting: time
+2026-11-03 21:34:01.943 PKT [22328] LOG:  checkpoint complete: wrote 137 buffers (0.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=14.935 s, sync=0.871 s, total=16.216 s; sync files=87, longest=0.104 s, average=0.011 s; distance=691 kB, estimate=691 kB; lsn=0/2BCB600, redo lsn=0/2BB7A20
+2026-11-03 21:35:30.917 PKT [16668] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-03 21:35:30.917 PKT [16668] DETAIL:  Key ("userId", "idempotencyKey")=(cmw0wsncp0000thwcgcu9nvcm, 45d00b36-44d2-46df-80dd-60a27a39dc15) already exists.
+2026-11-03 21:35:30.917 PKT [16668] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-03 21:35:31.367 PKT [6024] ERROR:  Published rules are immutable
+2026-11-03 21:35:31.367 PKT [6024] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-03 21:35:31.367 PKT [6024] STATEMENT:  UPDATE "public"."TaxRule" SET "name" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-03 21:35:32.522 PKT [16668] ERROR:  Calculation snapshots are immutable
+2026-11-03 21:35:32.522 PKT [16668] CONTEXT:  PL/pgSQL function guard_calculation_snapshot() line 7 at RAISE
+2026-11-03 21:35:32.522 PKT [16668] STATEMENT:  UPDATE "public"."TaxCalculation" SET "result" = $1 WHERE ("public"."TaxCalculation"."id" = $2 AND 1=1) RETURNING "public"."TaxCalculation"."id", "public"."TaxCalculation"."userId", "public"."TaxCalculation"."taxYear", "public"."TaxCalculation"."ruleVersion", "public"."TaxCalculation"."status", "public"."TaxCalculation"."inputHash", "public"."TaxCalculation"."dataset", "public"."TaxCalculation"."result", "public"."TaxCalculation"."createdAt", "public"."TaxCalculation"."finalizedAt"
+2026-11-03 21:35:32.533 PKT [16668] ERROR:  Published rules are immutable
+2026-11-03 21:35:32.533 PKT [16668] CONTEXT:  PL/pgSQL function guard_published_rule() line 3 at RAISE
+2026-11-03 21:35:32.533 PKT [16668] STATEMENT:  UPDATE "public"."TaxRule" SET "verified" = $1 WHERE ("public"."TaxRule"."id" = $2 AND 1=1) RETURNING "public"."TaxRule"."id", "public"."TaxRule"."ruleCode", "public"."TaxRule"."taxYear", "public"."TaxRule"."version", "public"."TaxRule"."name", "public"."TaxRule"."description", "public"."TaxRule"."taxpayerType", "public"."TaxRule"."incomeHead", "public"."TaxRule"."section", "public"."TaxRule"."schedule", "public"."TaxRule"."division", "public"."TaxRule"."clause", "public"."TaxRule"."effectiveFrom", "public"."TaxRule"."effectiveTo", "public"."TaxRule"."priority", "public"."TaxRule"."ruleType", "public"."TaxRule"."formulaType", "public"."TaxRule"."active", "public"."TaxRule"."verified", "public"."TaxRule"."published", "public"."TaxRule"."notes", "public"."TaxRule"."parameters"
+2026-11-03 21:35:33.349 PKT [20476] ERROR:  duplicate key value violates unique constraint "Transaction_userId_idempotencyKey_key"
+2026-11-03 21:35:33.349 PKT [20476] DETAIL:  Key ("userId", "idempotencyKey")=(cmw0wspje0009thigdffvxrb4, 6af7f9e5-0755-49a4-ab49-50a00c45dc76) already exists.
+2026-11-03 21:35:33.349 PKT [20476] STATEMENT:  INSERT INTO "public"."Transaction" ("id","userId","accountId","destinationAccountId","type","amount","date","categoryId","subcategory","merchant","description","paymentMethod","person","taxRelevant","businessOrPersonal","recurring","source","idempotencyKey","revision","createdAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING "public"."Transaction"."id", "public"."Transaction"."userId", "public"."Transaction"."accountId", "public"."Transaction"."destinationAccountId", "public"."Transaction"."type", "public"."Transaction"."amount", "public"."Transaction"."date", "public"."Transaction"."categoryId", "public"."Transaction"."subcategory", "public"."Transaction"."merchant", "public"."Transaction"."description", "public"."Transaction"."paymentMethod", "public"."Transaction"."person", "public"."Transaction"."taxRelevant", "public"."Transaction"."businessOrPersonal", "public"."Transaction"."recurring", "public"."Transaction"."source", "public"."Transaction"."idempotencyKey", "public"."Transaction"."revision", "public"."Transaction"."createdAt"
+2026-11-03 21:35:36.025 PKT [20476] ERROR:  Rule history is append-only
+2026-11-03 21:35:36.025 PKT [20476] CONTEXT:  PL/pgSQL function guard_rule_history() line 1 at RAISE
+2026-11-03 21:35:36.025 PKT [20476] STATEMENT:  UPDATE "public"."RuleHistory" SET "reason" = $1 WHERE ("public"."RuleHistory"."id" = $2 AND 1=1) RETURNING "public"."RuleHistory"."id", "public"."RuleHistory"."ruleCode", "public"."RuleHistory"."taxYear", "public"."RuleHistory"."version", "public"."RuleHistory"."actorId", "public"."RuleHistory"."action", "public"."RuleHistory"."reason", "public"."RuleHistory"."before", "public"."RuleHistory"."after", "public"."RuleHistory"."createdAt"
+2026-11-03 21:36:18.879 PKT [12816] LOG:  could not receive data from client: An existing connection was forcibly closed by the remote host.
+	
+2026-11-03 21:38:45.959 PKT [22328] LOG:  checkpoint starting: time
+2026-11-03 21:39:07.895 PKT [22328] LOG:  checkpoint complete: wrote 189 buffers (1.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=20.726 s, sync=1.058 s, total=21.937 s; sync files=115, longest=0.050 s, average=0.010 s; distance=981 kB, estimate=981 kB; lsn=0/2CACF38, redo lsn=0/2CACEA8
+2026-11-03 21:43:45.905 PKT [22328] LOG:  checkpoint starting: time
+2026-11-03 21:43:49.803 PKT [22328] LOG:  checkpoint complete: wrote 26 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=2.901 s, sync=0.874 s, total=3.898 s; sync files=23, longest=0.090 s, average=0.038 s; distance=108 kB, estimate=893 kB; lsn=0/2CC7F80, redo lsn=0/2CC7EF0

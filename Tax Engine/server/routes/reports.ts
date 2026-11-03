@@ -1,0 +1,14 @@
+import {renderReport} from '../services/pdf';
+import {Router} from 'express';
+import PDFDocument from 'pdfkit';
+import {db,atomic,audit,json} from '../db';
+import {requireFound,AppError} from '../errors';
+import {dashboard,wealth} from '../services/finance';
+import {configuration} from '../services/experience';
+export const reportsRouter=Router();
+export function csvCell(value:unknown){const t=String(value??'');return '"'+(/^[=+\-@\t\r]/.test(t)?"'":'')+t.replaceAll('"','""')+'"';}
+reportsRouter.get('/reports',async(q,s)=>s.json(await db.generatedReport.findMany({where:{userId:q.userId},orderBy:{createdAt:'desc'},select:{id:true,type:true,createdAt:true}})));
+reportsRouter.post('/reports/tax',async(q,s)=>{const c=requireFound(await db.taxCalculation.findFirst({where:{id:String(q.body.calculationId),userId:q.userId}}));s.json(await atomic(async tx=>{const r=await tx.generatedReport.create({data:{userId:q.userId,type:'TAX',snapshot:json(c)}});await audit(tx,q.userId,'GENERATE','report',r.id);return {id:r.id,url:`/api/reports/${r.id}/pdf`};}));});
+reportsRouter.post('/reports/finance',async(q,s)=>{const data={dashboard:await dashboard(q.userId),wealth:await wealth(db,q.userId),withholding:await db.withholdingTaxRecord.findMany({where:{userId:q.userId}})};s.json(await atomic(async tx=>{const r=await tx.generatedReport.create({data:{userId:q.userId,type:'FINANCE',snapshot:json(data)}});await audit(tx,q.userId,'GENERATE','report',r.id);return {id:r.id,url:`/api/reports/${r.id}/pdf`};}));});
+reportsRouter.get('/reports/:id/pdf',async(q,s)=>{const r=requireFound(await db.generatedReport.findFirst({where:{id:String(q.params.id),userId:q.userId}})),doc=new PDFDocument({size:'A4',margin:45});s.setHeader('Content-Type','application/pdf');s.setHeader('Content-Disposition',`attachment; filename="hisabketab-${r.type.toLowerCase()}-${r.id}.pdf"`);doc.pipe(s);const config=await configuration();doc.fontSize(10).text(config.reportBranding).moveDown();renderReport(doc,r.type,r.snapshot,r.createdAt);doc.end();});
+reportsRouter.get('/reports/export.csv',async(q,s)=>{const type=String(q.query.type??'transactions'),allowed:Record<string,string>={transactions:'transaction',assets:'asset',liabilities:'liability',goals:'financialGoal',withholding:'withholdingTaxRecord',budgets:'budget'};if(!allowed[type])throw new AppError('VALIDATION_ERROR','Unsupported report type.');const rows=await (db[allowed[type] as keyof typeof db] as any).findMany({where:{userId:q.userId}}),keys=rows.length?Object.keys(rows[0]).filter(k=>!['userId','idempotencyKey'].includes(k)):['No records'];s.setHeader('Content-Type','text/csv; charset=utf-8');s.setHeader('Content-Disposition',`attachment; filename="hisabketab-${type}.csv"`);s.send([keys.map(csvCell).join(','),...rows.map((r:any)=>keys.map(k=>csvCell(r[k] instanceof Date?r[k].toISOString():r[k])).join(','))].join('\r\n'));await audit(db,q.userId,'EXPORT','csv',type);});
