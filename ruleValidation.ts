@@ -1,0 +1,7 @@
+import {z} from 'zod';
+const rate=z.string().regex(/^(0(\.\d{1,8})?|1(\.0{1,8})?)$/);
+const amount=z.string().regex(/^\d{1,14}(\.\d{1,2})?$/);
+const text=z.string().min(1);
+const credit=z.object({nature:z.enum(['WITHHOLDING','ADVANCE','CREDIT']),treatment:z.enum(['ADJUSTABLE','FINAL','MINIMUM','NON_CREDITABLE','REVIEW_REQUIRED']),eligible:z.boolean(),rate:rate.optional(),cap:amount.optional(),refundable:z.boolean().optional()}).strict();
+export const parameterSchemas:Record<string,z.ZodType>={INCOME_CLASSIFICATION:z.object({category:text}).strict(),SELECTION:z.object({salaryShare:rate}).strict(),SCOPE:z.object({maxOrdinaryIncome:amount}).strict(),REPORTING_REQUIREMENT:z.object({ordinaryOnly:z.boolean().optional()}).strict(),ALLOWABLE_EXPENSE:z.object({category:text,rate,cap:amount.optional()}).strict(),DEDUCTION:z.object({category:text,rate,cap:amount.optional(),allowPersonal:z.boolean().optional()}).strict(),EXEMPTION:z.object({rate,cap:amount.optional()}).strict(),PROGRESSIVE_SLAB:z.object({}).strict(),SURCHARGE:z.object({threshold:amount,rate}).strict(),FIXED_RATE:z.object({rate}).strict(),FINAL_TAX:z.object({rate}).strict(),MINIMUM_TAX:z.object({rate}).strict(),WITHHOLDING:credit,ADJUSTABLE_TAX:credit,TAX_CREDIT:credit,WEALTH_RULE:z.object({requireReconciled:z.boolean()}).strict()};
+export function validateParameters(rule:{ruleType:string;parameters:unknown}){const schema=parameterSchemas[rule.ruleType];if(!schema)throw new Error('Unsupported rule type.');schema.parse(rule.parameters);}
