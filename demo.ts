@@ -1,30 +1,10 @@
-import {randomBytes,randomUUID} from 'node:crypto';
-import bcrypt from 'bcryptjs';
-import {atomic,db,json} from '../db';
-import {writeTransaction} from './ledger';
-import {calculate} from './tax';
-import {defaultPreferences} from '../../src/domain/preferences';
-import {requireFound} from '../errors';
-export async function createDemo(){
- const passwordHash=await bcrypt.hash(randomBytes(32).toString('hex'),12);
- const user=await atomic(async tx=>{
-  const user=await tx.user.create({data:{email:`explore-${randomUUID()}@demo.hisabketab.local`,passwordHash,profile:{create:{name:'Abubakar Demo',cnic:'35202-0000000-1',occupation:'Salary',monthlyIncomeEstimate:'200000',essentialMonthlyExpenses:'25000',emergencySavings:'50000',dependents:2}},experience:{create:{preferences:json({...defaultPreferences,onboardingDone:true,level:'STANDARD'})}}}});
-  const userId=user.id,categories=await tx.transactionCategory.findMany();
-  const account=await tx.financialAccount.create({data:{userId,accountName:'Everyday bank',accountType:'BANK',openingBalance:'100000',openingDate:new Date('2025-07-01'),institution:'Fictional demo bank'}});
-  const items=[['INCOME','Salary','2400000','2026-06-01','Annual salary'],['EXPENSE','Groceries','100000','2026-06-02','Household groceries']];
-  const now=new Date(),year=now.getFullYear(),month=String(now.getMonth()+1).padStart(2,'0'),current=`${year}-${month}-01`;
-  items.push(['INCOME','Salary','180000',current,'Monthly salary'],['EXPENSE','Rent','35000',current,'Home rent'],['EXPENSE','Food','4200',current,'Lunch & coffee'],['EXPENSE','Groceries','18000',current,'Weekly groceries']);
-  for(const [type,category,amount,date,merchant]of items)await writeTransaction(tx,userId,{accountId:account.id,type:type as 'INCOME'|'EXPENSE',amount,date:new Date(date),categoryId:requireFound(categories.find(c=>c.type===type&&c.name===category)).id,merchant,description:'Fictional demo record',paymentMethod:'BANK',businessOrPersonal:'PERSONAL',taxRelevant:type==='INCOME',recurring:category==='Rent',source:'MANUAL',idempotencyKey:randomUUID(),person:'',subcategory:''});
-  await tx.budget.create({data:{userId,name:'Monthly spending',period:'MONTHLY',startDate:new Date(current),endDate:new Date(Date.UTC(year,now.getMonth()+1,0)),amount:'80000'}});
-  await tx.financialGoal.create({data:{userId,name:'Emergency reserve',targetAmount:'500000',currentAmount:'125000',targetDate:new Date(Date.UTC(year+1,11,31)),goalType:'EMERGENCY',minimumContribution:'10000'}});
-  await tx.asset.create({data:{userId,description:'Family vehicle',assetType:'VEHICLE',acquisitionDate:new Date('2025-07-01'),acquisitionCost:'500000',currentDeclaredValue:'500000',sourceOfFunds:'Prior savings'}});
-  await tx.liability.create({data:{userId,description:'Personal loan',liabilityType:'LOAN',originalAmount:'100000',outstandingAmount:'100000',monthlyPayment:'5000',lender:'Demo lender',startDate:new Date('2025-07-01')}});
-  await tx.recurringObligation.create({data:{userId,merchant:'Home rent',category:'Rent',amount:'35000',intervalDays:30,nextDueDate:new Date(Date.UTC(year,now.getMonth()+1,1)),confidence:100,status:'CONFIRMED',fingerprint:'demo-rent'}});
-  await tx.taxProfile.create({data:{userId,taxYear:2026,openingWealth:'500000',assetsReviewed:true,liabilitiesReviewed:true,withholdingReviewed:true,ordinaryResidentConfirmed:true}});
-  await tx.withholdingTaxRecord.create({data:{userId,taxYear:2026,date:new Date('2026-06-30'),amount:'120000',section:'149',nature:'WITHHOLDING',payer:'Demo employer',certificateReference:'DEMO-CERTIFICATE',taxTreatment:'ADJUSTABLE'}});
-  return user;
- });
- const calculation=await calculate(user.id,2026);
- await db.generatedReport.create({data:{userId:user.id,type:'TAX',snapshot:json(calculation)}});
- return user;
+import type {FinancialData} from '../types/index';
+export const demoUsers=[{id:'HK001',name:'Abubakar Awan',type:'Salaried employee'},{id:'HK002',name:'Ayesha Khan',type:'Freelancer'},{id:'HK003',name:'Hamza Malik',type:'Small business owner'},{id:'HK004',name:'Sara Ahmed',type:'Mixed income'}];
+export function getDemoData(id:string,taxYear=2026):FinancialData|null{
+ const user=demoUsers.find(u=>u.id===id);if(!user)return null;
+ const d:FinancialData={user:{id,name:user.name,cnic:'35202-0000000-7',residentialStatus:'resident',taxpayerType:'salaried',taxYear},income:[{id:'INC001',source:'ABC Software Pvt Ltd',type:'salary',grossAmount:2400000,taxWithheld:120000}],expenses:[{category:'rent',amount:360000,personalOrBusiness:'personal'}],withholdingTaxes:[{id:'WHT001',incomeId:'INC001',section:'149',description:'Salary withholding',amount:120000,taxYear,nature:'withholding',status:'adjustable',certificateAvailable:true}],assets:[{type:'bank',description:'Current account',value:1280000},{type:'vehicle',description:'Personal vehicle',value:1500000},{type:'cash',description:'Cash in hand',value:70000}],liabilities:[{type:'loan',description:'Vehicle financing',value:450000}],openingWealth:1200000,personalExpenses:1080000,wealthAdjustments:[{description:'Salary tax paid (not included in personal expenses)',amount:-120000}]};
+ if(id==='HK002'){d.user.taxpayerType='freelancer';d.income=[{id:'INC001',source:'Local design consulting clients',type:'freelance',grossAmount:1800000,taxWithheld:0}];d.expenses.push({category:'internet',amount:48000,personalOrBusiness:'business'});d.withholdingTaxes=[{id:'ADV001',section:'147',description:'Quarterly advance tax',amount:90000,taxYear,nature:'advance',status:'adjustable',certificateAvailable:true}];d.wealthAdjustments=[{description:'Advance tax paid',amount:-90000},{description:'Business internet paid',amount:-48000}];d.assets[0].value=602000;}
+ if(id==='HK003'){d.user.taxpayerType='business';d.income=[{id:'INC001',source:'Malik Stationery · annual receipts',type:'business',grossAmount:3200000,taxWithheld:0}];d.expenses.push({category:'supplies',amount:600000,personalOrBusiness:'business'});d.withholdingTaxes=[{id:'ADV001',section:'147',description:'Business advance tax',amount:250000,taxYear,nature:'advance',status:'adjustable',certificateAvailable:true}];d.wealthAdjustments=[{description:'Advance tax paid',amount:-250000},{description:'Business supplies paid',amount:-600000}];d.assets[0].value=1150000;}
+ if(id==='HK004'){d.user.taxpayerType='mixed';d.income.push({id:'INC002',source:'Local consulting practice',type:'freelance',grossAmount:900000,taxWithheld:0});d.assets[0].value=2130000;}
+ return d;
 }
